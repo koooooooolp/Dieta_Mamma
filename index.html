@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dieta</title>
+
+<style>
+body {
+    font-family: -apple-system, sans-serif;
+    background: #f5f5f7;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
+
+select, button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+button {
+    background: black;
+    color: white;
+    border: none;
+}
+
+.output {
+    font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Dieta</h2>
+
+<div class="card">
+
+<label>Pasto</label>
+<select id="mealType">
+    <option value="pranzo">Pranzo</option>
+    <option value="cena">Cena</option>
+    <option value="scarico">Cena (scarico)</option>
+</select>
+
+<label>Carboidrati</label>
+<select id="carbs">
+    <option value="Riso|50g">Riso (50g)</option>
+    <option value="Pasta|50g">Pasta (50g)</option>
+    <option value="Pane|60g">Pane (60g)</option>
+    <option value="Patate|180g">Patate (180g)</option>
+</select>
+
+<label>Proteine</label>
+<select id="proteins">
+    <option value="Pollo|120g">Pollo (120g)</option>
+    <option value="Tacchino|120g">Tacchino (120g)</option>
+    <option value="Pesce|150g">Pesce (150g)</option>
+    <option value="Tonno|100g">Tonno (100g)</option>
+    <option value="Ricotta|150g">Ricotta (150g)</option>
+    <option value="Uova|2">Uova (2)</option>
+</select>
+
+<label>Verdure</label>
+<select id="veggies">
+    <option>Zucchine</option>
+    <option>Spinaci</option>
+    <option>Broccoli</option>
+    <option>Insalata</option>
+</select>
+
+<button id="generateBtn">Mostra pasto</button>
+
+</div>
+
+<div class="card output" id="output">—</div>
+
+</div>
+
+<script>
+
+// riferimenti
+const btn = document.getElementById("generateBtn");
+
+// evento compatibile iPhone
+btn.addEventListener("click", function() {
+
+    const type = document.getElementById("mealType").value;
+    const carb = document.getElementById("carbs").value.split("|");
+    const protein = document.getElementById("proteins").value.split("|");
+    const veggie = document.getElementById("veggies").value;
+
+    let result = "";
+
+    if (type === "scarico") {
+        result = `
+        <b>${protein[0]}</b> (${protein[1]})
+        <br>Verdure: ${veggie}
+        `;
+    } else {
+        result = `
+        <b>${carb[0]}</b> (${carb[1]})
+        <br><b>${protein[0]}</b> (${protein[1]})
+        <br>Verdure: ${veggie}
+        `;
+    }
+
+    document.getElementById("output").innerHTML = result;
+
+});
+
+</script>
+
+</body>
+</html>
