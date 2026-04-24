@@ -95,30 +95,29 @@ button {
 
 <script>
 
-// riferimenti
+// prende il bottone giusto (ID corretto)
 const btn = document.getElementById("generateBtn");
 
-// evento compatibile iPhone
+// evento click (compatibile iPhone)
 btn.addEventListener("click", function() {
 
     const type = document.getElementById("mealType").value;
-    const carb = document.getElementById("carbs").value.split("|");
-    const protein = document.getElementById("proteins").value.split("|");
+    const carbValue = document.getElementById("carbs").value;
+    const proteinValue = document.getElementById("proteins").value;
     const veggie = document.getElementById("veggies").value;
+
+    const carb = carbValue.split("|");
+    const protein = proteinValue.split("|");
 
     let result = "";
 
     if (type === "scarico") {
-        result = `
-        <b>${protein[0]}</b> (${protein[1]})
-        <br>Verdure: ${veggie}
-        `;
+        result = "<b>" + protein[0] + "</b> (" + protein[1] + ")" +
+                 "<br>Verdure: " + veggie;
     } else {
-        result = `
-        <b>${carb[0]}</b> (${carb[1]})
-        <br><b>${protein[0]}</b> (${protein[1]})
-        <br>Verdure: ${veggie}
-        `;
+        result = "<b>" + carb[0] + "</b> (" + carb[1] + ")" +
+                 "<br><b>" + protein[0] + "</b> (" + protein[1] + ")" +
+                 "<br>Verdure: " + veggie;
     }
 
     document.getElementById("output").innerHTML = result;
