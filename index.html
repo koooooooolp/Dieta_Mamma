@@ -59,21 +59,28 @@ button {
     <option value="scarico">Cena (scarico)</option>
 </select>
 
-<label>Carboidrati</label>
-<select id="carbs">
-    <option value="Riso|50g">Riso (50g)</option>
-    <option value="Pasta|50g">Pasta (50g)</option>
-    <option value="Pane|60g">Pane (60g)</option>
-    <option value="Patate|180g">Patate (180g)</option>
-</select>
+<div id="carbContainer">
+    <label>Carboidrati</label>
+    <select id="carbs">
+        <option value="Pane|60g">Pane (60g)</option>
+        <option value="Pasta|50g">Pasta (50g)</option>
+        <option value="Riso|50g">Riso (50g)</option>
+        <option value="Cous cous|50g">Cous cous (50g)</option>
+        <option value="Farro/Orzo|50g">Farro/Orzo (50g)</option>
+        <option value="Patate|180g">Patate (180g)</option>
+        <option value="Crackers/Wasa|35g">Crackers/Wasa (35g)</option>
+    </select>
+</div>
 
 <label>Proteine</label>
 <select id="proteins">
-    <option value="Pollo|120g">Pollo (120g)</option>
-    <option value="Tacchino|120g">Tacchino (120g)</option>
+    <option value="Pollo/Tacchino|120g">Pollo/Tacchino (120g)</option>
     <option value="Pesce|150g">Pesce (150g)</option>
-    <option value="Tonno|100g">Tonno (100g)</option>
-    <option value="Ricotta|150g">Ricotta (150g)</option>
+    <option value="Molluschi|200g">Molluschi (200g)</option>
+    <option value="Tonno/Salmone affumicato|100g">Tonno/Salmone (100g)</option>
+    <option value="Formaggio magro|100g">Formaggio magro (100g)</option>
+    <option value="Ricotta/Fiocchi latte|150g">Ricotta/Fiocchi latte (150g)</option>
+    <option value="Salumi magri|120g">Salumi magri (120g)</option>
     <option value="Uova|2">Uova (2)</option>
 </select>
 
@@ -83,6 +90,9 @@ button {
     <option>Spinaci</option>
     <option>Broccoli</option>
     <option>Insalata</option>
+    <option>Melanzane</option>
+    <option>Peperoni</option>
+    <option>Pomodori</option>
 </select>
 
 <button id="generateBtn">Mostra pasto</button>
@@ -95,29 +105,42 @@ button {
 
 <script>
 
-// prende il bottone giusto (ID corretto)
 const btn = document.getElementById("generateBtn");
+const mealType = document.getElementById("mealType");
+const carbContainer = document.getElementById("carbContainer");
 
-// evento click (compatibile iPhone)
+// 🔴 gestione UI corretta (sparizione carbo)
+mealType.addEventListener("change", function() {
+    if (mealType.value === "scarico") {
+        carbContainer.style.display = "none";
+    } else {
+        carbContainer.style.display = "block";
+    }
+});
+
+// 🔴 logica pasto
 btn.addEventListener("click", function() {
 
-    const type = document.getElementById("mealType").value;
-    const carbValue = document.getElementById("carbs").value;
-    const proteinValue = document.getElementById("proteins").value;
+    const type = mealType.value;
+    const protein = document.getElementById("proteins").value.split("|");
     const veggie = document.getElementById("veggies").value;
-
-    const carb = carbValue.split("|");
-    const protein = proteinValue.split("|");
 
     let result = "";
 
     if (type === "scarico") {
-        result = "<b>" + protein[0] + "</b> (" + protein[1] + ")" +
-                 "<br>Verdure: " + veggie;
+
+        result =
+            "<b>" + protein[0] + "</b> (" + protein[1] + ")" +
+            "<br>Verdure: " + veggie;
+
     } else {
-        result = "<b>" + carb[0] + "</b> (" + carb[1] + ")" +
-                 "<br><b>" + protein[0] + "</b> (" + protein[1] + ")" +
-                 "<br>Verdure: " + veggie;
+
+        const carb = document.getElementById("carbs").value.split("|");
+
+        result =
+            "<b>" + carb[0] + "</b> (" + carb[1] + ")" +
+            "<br><b>" + protein[0] + "</b> (" + protein[1] + ")" +
+            "<br>Verdure: " + veggie;
     }
 
     document.getElementById("output").innerHTML = result;
