@@ -11,19 +11,13 @@ body {
     background: #f5f5f7;
     padding: 20px;
 }
-
-.container {
-    max-width: 400px;
-    margin: auto;
-}
-
+.container { max-width: 400px; margin: auto; }
 .card {
     background: white;
     padding: 20px;
     border-radius: 16px;
     margin-bottom: 15px;
 }
-
 select, button {
     width: 100%;
     padding: 14px;
@@ -31,16 +25,12 @@ select, button {
     border-radius: 10px;
     font-size: 16px;
 }
-
 button {
     background: black;
     color: white;
     border: none;
 }
-
-.output {
-    font-size: 18px;
-}
+.output { font-size: 18px; }
 </style>
 </head>
 
@@ -56,20 +46,16 @@ button {
 <select id="mealType">
     <option value="pranzo">Pranzo</option>
     <option value="cena">Cena</option>
-    <option value="scarico">Cena (scarico)</option>
 </select>
 
+<label>
+<input type="checkbox" id="scaricoToggle">
+ Giorno scarico
+</label>
+
 <div id="carbContainer">
-    <label>Carboidrati</label>
-    <select id="carbs">
-        <option value="Pane|60g">Pane (60g)</option>
-        <option value="Pasta|50g">Pasta (50g)</option>
-        <option value="Riso|50g">Riso (50g)</option>
-        <option value="Cous cous|50g">Cous cous (50g)</option>
-        <option value="Farro/Orzo|50g">Farro/Orzo (50g)</option>
-        <option value="Patate|180g">Patate (180g)</option>
-        <option value="Crackers/Wasa|35g">Crackers/Wasa (35g)</option>
-    </select>
+<label>Carboidrati</label>
+<select id="carbs"></select>
 </div>
 
 <label>Proteine</label>
@@ -77,10 +63,10 @@ button {
     <option value="Pollo/Tacchino|120g">Pollo/Tacchino (120g)</option>
     <option value="Pesce|150g">Pesce (150g)</option>
     <option value="Molluschi|200g">Molluschi (200g)</option>
-    <option value="Tonno/Salmone affumicato|100g">Tonno/Salmone (100g)</option>
-    <option value="Formaggio magro|100g">Formaggio magro (100g)</option>
-    <option value="Ricotta/Fiocchi latte|150g">Ricotta/Fiocchi latte (150g)</option>
-    <option value="Salumi magri|120g">Salumi magri (120g)</option>
+    <option value="Tonno/Salmone|100g">Tonno/Salmone (100g)</option>
+    <option value="Formaggio magro|100g">Formaggio (100g)</option>
+    <option value="Ricotta/Fiocchi latte|150g">Ricotta (150g)</option>
+    <option value="Salumi magri|120g">Salumi (120g)</option>
     <option value="Uova|2">Uova (2)</option>
 </select>
 
@@ -92,7 +78,6 @@ button {
     <option>Insalata</option>
     <option>Melanzane</option>
     <option>Peperoni</option>
-    <option>Pomodori</option>
 </select>
 
 <button id="generateBtn">Mostra pasto</button>
@@ -105,20 +90,50 @@ button {
 
 <script>
 
-const btn = document.getElementById("generateBtn");
 const mealType = document.getElementById("mealType");
+const scarico = document.getElementById("scaricoToggle");
+const carbs = document.getElementById("carbs");
 const carbContainer = document.getElementById("carbContainer");
+const btn = document.getElementById("generateBtn");
 
-// 🔴 gestione UI corretta (sparizione carbo)
-mealType.addEventListener("change", function() {
-    if (mealType.value === "scarico") {
+// 🔴 popolazione carbo dinamica
+function updateCarbs() {
+
+    carbs.innerHTML = "";
+
+    if (scarico.checked && mealType.value === "pranzo") {
+        // 🔴 CARBO AUMENTATI (da PDF)
+        carbs.innerHTML += '<option value="Pasta|70g">Pasta (70g)</option>';
+        carbs.innerHTML += '<option value="Pasta fresca|80g">Pasta fresca (80g)</option>';
+        carbs.innerHTML += '<option value="Gnocchi|140g">Gnocchi (140g)</option>';
+    } else {
+        // 🔴 CARBO STANDARD
+        carbs.innerHTML += '<option value="Pane|60g">Pane (60g)</option>';
+        carbs.innerHTML += '<option value="Pasta|50g">Pasta (50g)</option>';
+        carbs.innerHTML += '<option value="Riso|50g">Riso (50g)</option>';
+        carbs.innerHTML += '<option value="Cous cous|50g">Cous cous (50g)</option>';
+        carbs.innerHTML += '<option value="Farro/Orzo|50g">Farro/Orzo (50g)</option>';
+        carbs.innerHTML += '<option value="Patate|180g">Patate (180g)</option>';
+        carbs.innerHTML += '<option value="Crackers|35g">Crackers (35g)</option>';
+    }
+}
+
+// 🔴 gestione UI
+function updateUI() {
+
+    if (scarico.checked && mealType.value === "cena") {
         carbContainer.style.display = "none";
     } else {
         carbContainer.style.display = "block";
     }
-});
 
-// 🔴 logica pasto
+    updateCarbs();
+}
+
+mealType.addEventListener("change", updateUI);
+scarico.addEventListener("change", updateUI);
+
+// 🔴 output
 btn.addEventListener("click", function() {
 
     const type = mealType.value;
@@ -127,15 +142,12 @@ btn.addEventListener("click", function() {
 
     let result = "";
 
-    if (type === "scarico") {
-
+    if (scarico.checked && type === "cena") {
         result =
             "<b>" + protein[0] + "</b> (" + protein[1] + ")" +
             "<br>Verdure: " + veggie;
-
     } else {
-
-        const carb = document.getElementById("carbs").value.split("|");
+        const carb = carbs.value.split("|");
 
         result =
             "<b>" + carb[0] + "</b> (" + carb[1] + ")" +
@@ -146,6 +158,9 @@ btn.addEventListener("click", function() {
     document.getElementById("output").innerHTML = result;
 
 });
+
+// init
+updateUI();
 
 </script>
 
